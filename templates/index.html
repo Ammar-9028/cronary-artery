@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CardioScan AI | Coronary Artery Disease Detection</title><meta name="theme-color" content="#070b1a">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css"></head>
+<body>
+<canvas id="ecg" aria-hidden="true"></canvas>
+<header class="nav"><a class="brand" href="#top"><svg viewBox="0 0 32 32" class="beat" aria-hidden="true"><path d="M16 28S3 20 3 11a6.5 6.5 0 0 1 13-2 6.5 6.5 0 0 1 13 2c0 9-13 17-13 17z"/></svg>CardioScan<b>AI</b></a>
+<nav><a href="#analyze">Analyze</a><a href="#how">How it works</a><a href="#model">Model</a></nav></header>
+<main id="top">
+<section class="hero"><p class="chip"><i></i> Deep Learning &middot; Coronary Artery Disease</p>
+<h1>Dil ki <span class="grad">coronary artery</span> ko AI se samjho.</h1>
+<p class="sub">Image upload karo. CNN model CAD ka <b>Positive</b> ya <b>Negative</b> signal batayega, aur Grad-CAM heatmap se dikhayega ki model ne kahan dekha.</p>
+<a class="btn" href="#analyze">Analysis shuru karo</a>
+<div class="stats"><div><b data-n="224">0</b><span>px input</span></div><div><b data-n="2">0</b><span>classes</span></div><div><b data-n="1">0</b><span>click analysis</span></div></div></section>
+
+<section id="analyze" class="panel">
+{% if demo %}<div class="demo" role="status"><b>DEMO MODE</b> Trained model abhi load nahi hua. Neeche ka result sirf UI dikhane ke liye hai, real prediction nahi.</div>{% endif %}
+<div class="grid2">
+<div><div id="drop" class="drop" tabindex="0" role="button" aria-label="Image upload karo">
+<input id="file" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" hidden>
+<div class="ph"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 34V14m0 0-8 8m8-8 8 8M8 38h32" /></svg><p><b>Image yahan drop karo</b><br>ya click karke chuno (PNG, JPG, max 8 MB)</p></div>
+<div class="prev" hidden><img id="prev" alt="Uploaded image preview"><i class="scan"></i></div></div>
+<button id="go" class="btn wide" disabled>Analyze karo</button><p id="err" class="err" role="alert"></p></div>
+
+<div id="res" class="res idle"><div class="idle-t"><p>Result yahan dikhega.</p></div>
+<div class="out" hidden>
+<div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle id="arc" class="fg" cx="60" cy="60" r="52"/></svg><div class="num"><b id="pct">0</b>%<small>CAD probability</small></div></div>
+<h2 id="verdict"></h2><p id="conf" class="mono"></p>
+<div class="tabs" role="tablist"><button class="on" data-v="original">Original</button><button data-v="heat" id="heatTab">Grad-CAM</button></div>
+<img id="view" alt="Analysed image" class="view"><p id="meta" class="mono dim"></p></div></div></div>
+<p class="disc">Yeh ek academic project hai. Yeh tool medical diagnosis nahi hai, kisi bhi symptom ke liye doctor se milo.</p></section>
+
+<section id="how" class="sec"><h2>Kaise kaam karta hai</h2><div class="steps">
+<article><span>01</span><h3>Upload</h3><p>Image 224&times;224 par resize hoti hai aur normalize hoti hai.</p></article>
+<article><span>02</span><h3>CNN prediction</h3><p>MobileNetV2 (transfer learning) CAD probability nikalta hai.</p></article>
+<article><span>03</span><h3>Grad-CAM</h3><p>Heatmap batata hai ki prediction ke peeche image ka kaunsa hissa tha.</p></article></div></section>
+
+<section id="model" class="sec"><h2>Model pipeline</h2><div class="pipe"><span>Image</span><i></i><span>Preprocess</span><i></i><span>MobileNetV2</span><i></i><span>GAP + Dropout</span><i></i><span>Sigmoid</span><i></i><span class="hot">Positive / Negative</span></div>
+<p class="note">Training: class weights, data augmentation, 2-phase fine-tuning, threshold validation set se (Youden's J), final metrics alag test set par.</p></section>
+</main>
+<footer>CardioScan AI &middot; Final Year Project &middot; Educational use only</footer>
+<script src="/static/js/app.js"></script></body></html>
